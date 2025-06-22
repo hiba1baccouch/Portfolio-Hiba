@@ -621,6 +621,23 @@
             transform: translateY(-2px);
         }
 
+        .cv-btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: 2px solid transparent;
+            position: relative;
+        }
+        
+        .cv-btn::before {
+            content: '📄';
+            margin-right: 0.5rem;
+        }
+        
+        .cv-btn:hover {
+            background: linear-gradient(45deg, var(--secondary), var(--glow));
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
         /* Animations */
         @keyframes fadeInUp {
             from {
@@ -959,18 +976,6 @@
                 padding: 1.5rem;
             }
             
-            .contact-buttons {
-                flex-direction: column;
-                align-items: center;
-                gap: 1rem;
-            }
-            
-            .contact-btn {
-                width: 100%;
-                max-width: 280px;
-                text-align: center;
-            }
-            
             .experience-container {
                 grid-template-columns: 1fr;
                 gap: 2rem;
@@ -1068,6 +1073,18 @@
             .timeline-description {
                 font-size: 0.95rem;
                 line-height: 1.6;
+            }
+            
+            .contact-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .contact-btn {
+                width: 100%;
+                max-width: 280px;
+                text-align: center;
             }
         }
 
@@ -1924,7 +1941,8 @@
                 <div class="contact-buttons">
                     <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact.hibabaccouch@gmail.com" target="_blank" class="contact-btn">Email</a>
                     <a href="https://www.linkedin.com/in/hibabaccouch/" target="_blank" class="contact-btn">Linkedin</a>
-                    <a href="https://github.com/hiba1baccouch" target="_blank"class="contact-btn">Github</a>
+                    <a href="https://github.com/hiba1baccouch" target="_blank" class="contact-btn">Github</a>
+                    <a href="Hiba_Baccouch_CV.pdf" download="Hiba_Baccouch_CV.pdf" class="contact-btn cv-btn">Download CV</a>
                 </div>
             </div>
         </div>
