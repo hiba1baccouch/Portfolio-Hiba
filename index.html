@@ -920,7 +920,17 @@
                 right: 1rem;
                 transform: none;
                 width: auto;
-                padding: 0.8rem 1.5rem;
+                padding: 0.8rem 0.5rem; /* Reduced horizontal padding */
+                gap: 0.3rem; /* Reduced gap between items */
+            }
+            
+            .nav-item {
+                padding: 0.6rem 0.8rem; /* Smaller padding for mobile */
+                font-size: 0.75rem; /* Smaller font size */
+                min-width: auto;
+                flex: 1; /* Equal width distribution */
+                text-align: center;
+                white-space: nowrap; /* Prevent text wrapping */
             }
             
             .hero-title {
@@ -1021,6 +1031,16 @@
 
         /* Additional breakpoint for very small screens */
         @media (max-width: 480px) {
+            .nav {
+                padding: 0.6rem 0.3rem;
+                gap: 0.2rem;
+            }
+            
+            .nav-item {
+                padding: 0.5rem 0.4rem;
+                font-size: 0.7rem;
+            }
+            
             .hero-title {
                 font-size: 2rem;
             }
@@ -1031,11 +1051,6 @@
             
             .section {
                 padding: 2rem 0.8rem;
-            }
-            
-            .nav {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
             }
             
             .skills-grid {
@@ -1058,6 +1073,60 @@
             .contact-btn {
                 padding: 0.8rem 1.5rem;
                 font-size: 0.9rem;
+            }
+        }
+
+        /* Alternative: Hamburger menu for very small screens */
+        @media (max-width: 380px) {
+            .nav {
+                flex-direction: column;
+                position: fixed;
+                top: 1rem;
+                right: 1rem;
+                left: auto;
+                width: auto;
+                min-width: 150px;
+                transform: translateY(-100%);
+                transition: transform 0.3s ease;
+                opacity: 0;
+                pointer-events: none;
+            }
+            
+            .nav.active {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: all;
+            }
+            
+            .nav-item {
+                width: 100%;
+                text-align: left;
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+                flex: none;
+                white-space: normal;
+            }
+            
+            /* Hamburger toggle button */
+            .nav-toggle {
+                position: fixed;
+                top: 1.5rem;
+                right: 1.5rem;
+                z-index: 1001;
+                background: rgba(10, 10, 10, 0.8);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                padding: 0.5rem;
+                color: white;
+                cursor: pointer;
+                display: block;
+            }
+        }
+        
+        /* Hide hamburger on larger screens */
+        @media (min-width: 381px) {
+            .nav-toggle {
+                display: none;
             }
         }
 
@@ -1262,13 +1331,16 @@
     <div class="particles" id="particles"></div>
 
     <!-- Navigation -->
-    <nav class="nav">
+    <nav class="nav" id="nav">
         <a href="#home" class="nav-item active">Home</a>
         <a href="#projects" class="nav-item">Projects</a>
         <a href="#skills" class="nav-item">Skills</a>
         <a href="#experience" class="nav-item">Experience</a>
         <a href="#contact" class="nav-item">Contact</a>
     </nav>
+    
+    <!-- Mobile Navigation Toggle -->
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
@@ -2297,6 +2369,18 @@
                 });
             });
         }
+        
+        function toggleNav() {
+            const nav = document.querySelector('.nav');
+            nav.classList.toggle('active');
+        }
+        
+        // Close nav when clicking on nav items
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelector('.nav').classList.remove('active');
+            });
+        });
         
         // Initialize skills filters
         document.addEventListener('DOMContentLoaded', () => {
