@@ -912,7 +912,7 @@
             z-index: 1;
         }
 
-        /* Responsive Design */
+        /* Enhanced Mobile Responsive Design */
         @media (max-width: 768px) {
             .nav {
                 top: 1rem;
@@ -920,23 +920,43 @@
                 right: 1rem;
                 transform: none;
                 width: auto;
+                padding: 0.8rem 1.5rem;
             }
             
             .hero-title {
-                font-size: 3.5rem;
+                font-size: 2.5rem; /* Reduced from 3.5rem for better mobile fit */
+                line-height: 1.2;
+                margin-bottom: 1rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 2rem;
             }
             
             .section {
-                padding: 4rem 1rem;
+                padding: 3rem 1rem; /* Reduced padding for mobile */
             }
             
             .projects-container {
                 grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .project-card {
+                padding: 1.5rem;
             }
             
             .contact-buttons {
                 flex-direction: column;
                 align-items: center;
+                gap: 1rem;
+            }
+            
+            .contact-btn {
+                width: 100%;
+                max-width: 280px;
+                text-align: center;
             }
             
             .experience-container {
@@ -972,6 +992,98 @@
             
             .education-icon {
                 align-self: center;
+            }
+            
+            /* Skills Grid Mobile */
+            .skills-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .skill-card {
+                padding: 1rem;
+            }
+            
+            /* Filter Buttons Mobile */
+            .project-filters, .skills-filters {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.8rem;
+                margin: 2rem 0 3rem 0;
+            }
+            
+            .filter-btn, .skills-filter-btn {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.85rem;
+                min-width: auto;
+            }
+        }
+
+        /* Additional breakpoint for very small screens */
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .section {
+                padding: 2rem 0.8rem;
+            }
+            
+            .nav {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-card {
+                padding: 1.2rem;
+            }
+            
+            .project-title {
+                font-size: 1.3rem;
+            }
+            
+            .filter-btn, .skills-filter-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .contact-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Landscape mobile orientation */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .section {
+                padding: 2.5rem 1rem;
+            }
+        }
+
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .filter-btn, .skills-filter-btn, .contact-btn {
+                min-height: 44px; /* Minimum touch target size */
+            }
+            
+            .project-card {
+                transition: transform 0.2s ease;
+            }
+            
+            .project-card:active {
+                transform: scale(0.98);
             }
         }
 
@@ -1130,28 +1242,7 @@
             transform: scale(1) translateY(0);
         }
 
-        /* Responsive Filter Buttons */
-        @media (max-width: 768px) {
-            .project-filters {
-                gap: 1rem;
-                margin: 2rem 0 3rem 0;
-            }
-            
-            .filter-btn {
-                padding: 0.8rem 1.5rem;
-                font-size: 0.9rem;
-            }
-            
-            .skills-filters {
-                gap: 1rem;
-                margin: 2rem 0 3rem 0;
-            }
-            
-            .skills-filter-btn {
-                padding: 0.8rem 1.2rem;
-                font-size: 0.8rem;
-            }
-        }
+
     </style>
 </head>
 <body>
@@ -1203,7 +1294,7 @@
         <div class="projects-container">
             <div class="project-card" data-category="mobile">
                 <div class="project-image">
-                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\Synapse.jpg" alt="Synapse" />
+                    <img src="images/Synapse.jpg" alt="Synapse" />
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">Synapse</h3>
@@ -1224,7 +1315,7 @@
             </div>
             <div class="project-card" data-category="mobile">
                 <div class="project-image">
-                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\Foresight.png" alt="Foresight" />
+                    <img src="images/Foresight.png" alt="Foresight" />
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">Foresight</h3>
@@ -1243,7 +1334,7 @@
             </div>
             <div class="project-card" data-category="website">
                 <div class="project-image">
-                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\Novus.png" alt="Novus ProjeTek" />
+                    <img src="images/Novus.png" alt="Novus ProjeTek" />
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">Novus ProjeTek</h3>
@@ -1263,7 +1354,7 @@
             </div>
             <div class="project-card" data-category="website">
                 <div class="project-image">
-                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\RYZODEG.png" alt="RYZODEG" />
+                    <img src="images/RYZODEG.png" alt="RYZODEG" />
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">RYZODEG</h3>
@@ -1282,7 +1373,7 @@
             </div>
             <div class="project-card" data-category="mobile">
                 <div class="project-image">
-                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\Hope.png" alt="Hope" />
+                    <img src="images/Hope.png" alt="Hope" />
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">Hope</h3>
@@ -1302,7 +1393,7 @@
             </div>
             <div class="project-card" data-category="mobile">
                 <div class="project-image">
-                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\GreenLoop.png" alt="GreenLoop" />
+                    <img src="images/GreenLoop.png" alt="GreenLoop" />
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">GreeLoop</h3>
@@ -1321,7 +1412,7 @@
             </div>
             <div class="project-card" data-category="website">
                 <div class="project-image">
-                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\CCNSCOLLAB.png" alt="CCNSCOLLAB" />
+                    <img src="images/CCNSCOLLAB.png" alt="CCNSCOLLAB" />
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">Project Managment Website</h3>
@@ -1341,7 +1432,7 @@
             </div>
             <div class="project-card" data-category="website">
                 <div class="project-image">
-                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\law.png" alt="Law Website" />
+                    <img src="images/law.png" alt="Law Website" />
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">Law Website</h3>
@@ -1360,7 +1451,7 @@
             </div>
             <div class="project-card" data-category="mobile">
                 <div class="project-image">
-                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\eventi.png" alt="Eventi" />
+                    <img src="images/eventi.png" alt="Eventi" />
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">Eventi - Community App</h3>
@@ -1382,7 +1473,7 @@
             </div>
             <div class="project-card" data-category="mobile">
                 <div class="project-image">
-                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\gym app.png" alt="Gym App" />
+                    <img src="images/gym app.png" alt="Gym App" />
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">Gym Application</h3>
@@ -1402,7 +1493,7 @@
             </div>
             <div class="project-card" data-category="website">
                 <div class="project-image">
-                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\gym web.png" alt="Gym Web" />
+                    <img src="images/gym web.png" alt="Gym Web" />
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">Gym Managment Dashboard</h3>
@@ -1423,7 +1514,7 @@
             </div>
             <div class="project-card" data-category="website">
                 <div class="project-image">
-                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\Drug Discovery.png" alt="Drug Discovery" />
+                    <img src="images/Drug Discovery.png" alt="Drug Discovery" />
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">Drug Discovery Website</h3>
