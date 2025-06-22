@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiba Baccouch - Portfolio</title>
+    
+    <!-- Favicon Links -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --glow: #22d3ee;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: white;
+            overflow-x: hidden;
+            line-height: 1.6;
+            cursor: none;
+        }
+
+        /* Advanced Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--glow);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            box-shadow: 0 0 20px var(--glow), 0 0 40px var(--glow), 0 0 80px var(--glow);
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: rgba(34, 211, 238, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+        }
+
+        .cursor-outer {
+            position: fixed;
+            width: 32px;
+            height: 32px;
+            border: 2px solid rgba(34, 211, 238, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9997;
+            transition: all 0.15s ease;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 1s ease;
+        }
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 2px solid rgba(34, 211, 238, 0.1);
+            border-top: 2px solid var(--glow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Advanced Navigation */
+        .nav {
+            position: fixed;
+            top: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(10, 10, 10, 0.8);
+            padding: 0.5rem;
+            border-radius: 50px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border-radius: 25px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-item:hover::before {
+            left: 100%;
+        }
+
+        .nav-item.active,
+        .nav-item:hover {
+            color: white;
+            background: rgba(99, 102, 241, 0.2);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Hero Section - Advanced */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 900px;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            line-height: 0.85;
+            background: linear-gradient(45deg, #fff, var(--glow), var(--primary), var(--secondary));
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            animation: gradientFlow 4s ease-in-out infinite;
+            letter-spacing: -0.02em;
+            filter: drop-shadow(0 0 30px rgba(34, 211, 238, 0.5));
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        .hologram-button {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: transparent;
+            border: 2px solid var(--glow);
+            border-radius: 8px;
+            color: var(--glow);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .hologram-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--glow), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .hologram-button:hover::before {
+            left: 100%;
+        }
+
+        .hologram-button:hover {
+            box-shadow: 0 0 50px var(--glow), inset 0 0 50px rgba(34, 211, 238, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* Advanced Project Cards */
+        .section {
+            padding: 8rem 2rem 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+            border-radius: 40px;
+        }
+
+        .section#projects {
+            background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            border-radius: 40px;
+            margin: 2rem auto;
+        }
+
+        .section-title {
+            font-size: 5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: linear-gradient(45deg, #fff, var(--glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .section-title.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--glow), transparent);
+        }
+
+        .projects-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 4rem auto 0;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(34, 211, 238, 0.05), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .project-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(34, 211, 238, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(34, 211, 238, 0.2);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 250px;
+            background: #000000; 
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 20px 20px 0 0;
+        }
+
+
+
+
+
+        .project-content {
+            padding: 2rem;
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .project-description {
+            opacity: 0.8;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-tag {
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--glow);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(34, 211, 238, 0.2);
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .project-link {
+            color: var(--glow);
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .project-link:hover {
+            background: rgba(34, 211, 238, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(34, 211, 238, 0.2);
+            line-height: 1.6;
+        }
+
+
+
+        /* Advanced Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            margin-top: 4rem;
+        }
+
+        .skill-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(34, 211, 238, 0.05), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .skill-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(34, 211, 238, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .skill-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .Skill-Logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .Skill-Logo img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .skill-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .skill-description {
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            border-radius: 40px;
+            padding: 5rem 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(99, 102, 241, 0.05),
+                rgba(139, 92, 246, 0.05),
+                rgba(34, 211, 238, 0.05)
+            );
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #fff, var(--glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .contact-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.8;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .contact-btn {
+            padding: 1.2rem 2.5rem;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .contact-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .contact-btn:hover::before {
+            left: 100%;
+        }
+
+        .contact-btn:hover {
+            border-color: var(--glow);
+            color: var(--glow);
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+            50% { transform: translate(-50%, -50%) translateY(-10px); }
+        }
+
+        /* Experience & Education Section */
+        .experience-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .timeline-section, .education-section {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-section::before, .education-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(147, 51, 234, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .timeline-section:hover::before, .education-section:hover::before {
+            opacity: 1;
+        }
+
+        .timeline-title, .education-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--glow);
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .timeline-title::after, .education-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--glow), var(--accent));
+            border-radius: 2px;
+        }
+
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--glow), var(--accent));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            padding-left: 2rem;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: var(--glow);
+            border-radius: 50%;
+            border: 3px solid var(--bg-primary);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+            z-index: 2;
+        }
+
+        .timeline-content {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(34, 211, 238, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .timeline-content:hover::before {
+            left: 100%;
+        }
+
+        .timeline-content:hover {
+            transform: translateX(10px);
+            border-color: rgba(34, 211, 238, 0.3);
+            box-shadow: 0 10px 30px rgba(34, 211, 238, 0.2);
+        }
+
+        .timeline-date {
+            color: var(--glow);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-role {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-company {
+            color: var(--accent);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-tag {
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--glow);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .tech-tag:hover {
+            background: rgba(34, 211, 238, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(34, 211, 238, 0.3);
+        }
+
+        /* Education Styles */
+        .education-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .education-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(34, 211, 238, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .education-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(147, 51, 234, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .education-card:hover::before {
+            left: 100%;
+        }
+
+        .education-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(147, 51, 234, 0.3);
+            box-shadow: 0 15px 40px rgba(147, 51, 234, 0.2);
+        }
+
+        .education-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--glow), var(--accent));
+            border-radius: 15px;
+            flex-shrink: 0;
+        }
+
+        .education-content {
+            flex: 1;
+        }
+
+        .education-degree {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .education-field {
+            color: var(--glow);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .education-school {
+            color: var(--accent);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .education-year {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .education-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        /* Particle System */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav {
+                top: 1rem;
+                left: 1rem;
+                right: 1rem;
+                transform: none;
+                width: auto;
+            }
+            
+            .hero-title {
+                font-size: 3.5rem;
+            }
+            
+            .section {
+                padding: 4rem 1rem;
+            }
+            
+            .projects-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .experience-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 0 1rem;
+            }
+            
+            .timeline-section, .education-section {
+                padding: 1.5rem;
+            }
+            
+            .timeline {
+                padding-left: 1.5rem;
+            }
+            
+            .timeline-item {
+                padding-left: 1.5rem;
+            }
+            
+            .timeline-marker {
+                left: -1.5rem;
+            }
+            
+            .timeline-title, .education-title {
+                font-size: 1.5rem;
+            }
+            
+            .education-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .education-icon {
+                align-self: center;
+            }
+        }
+
+        /* Advanced Scroll Indicator */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--glow));
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+
+        /* Project Filter Buttons */
+        .project-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 3rem 0 4rem 0;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 1rem 2.5rem;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .filter-btn:hover::before {
+            left: 100%;
+        }
+
+        .filter-btn:hover {
+            border-color: rgba(34, 211, 238, 0.5);
+            color: var(--glow);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2), 0 0 20px rgba(34, 211, 238, 0.1);
+        }
+
+        .filter-btn.active {
+            border-color: var(--glow);
+            color: var(--glow);
+            background: rgba(34, 211, 238, 0.1);
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.3), inset 0 0 20px rgba(34, 211, 238, 0.1);
+        }
+
+        .filter-btn.active::before {
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.2), transparent);
+        }
+
+        /* Project Card Filter Animation */
+        .project-card.hidden {
+            display: none;
+        }
+
+        .project-card.visible {
+            display: block;
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+
+        /* Skills Filter Buttons */
+        .skills-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 3rem 0 4rem 0;
+            flex-wrap: wrap;
+        }
+
+        .skills-filter-btn {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .skills-filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .skills-filter-btn:hover::before {
+            left: 100%;
+        }
+
+        .skills-filter-btn:hover {
+            border-color: rgba(34, 211, 238, 0.5);
+            color: var(--glow);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2), 0 0 20px rgba(34, 211, 238, 0.1);
+        }
+
+        .skills-filter-btn.active {
+            border-color: var(--glow);
+            color: var(--glow);
+            background: rgba(34, 211, 238, 0.1);
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.3), inset 0 0 20px rgba(34, 211, 238, 0.1);
+        }
+
+        .skills-filter-btn.active::before {
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.2), transparent);
+        }
+
+        /* Skill Card Filter Animation */
+        .skill-card.hidden {
+            display: none;
+        }
+
+        .skill-card.visible {
+            display: block;
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Responsive Filter Buttons */
+        @media (max-width: 768px) {
+            .project-filters {
+                gap: 1rem;
+                margin: 2rem 0 3rem 0;
+            }
+            
+            .filter-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .skills-filters {
+                gap: 1rem;
+                margin: 2rem 0 3rem 0;
+            }
+            
+            .skills-filter-btn {
+                padding: 0.8rem 1.2rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Advanced Cursors -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-outer" id="cursorOuter"></div>
+
+    <!-- Particle System -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <a href="#home" class="nav-item active">Home</a>
+        <a href="#projects" class="nav-item">Projects</a>
+        <a href="#skills" class="nav-item">Skills</a>
+        <a href="#experience" class="nav-item">Experience</a>
+        <a href="#contact" class="nav-item">Contact</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <canvas class="hero-canvas" id="heroCanvas"></canvas>
+        <div class="hero-content">
+            <h1 class="hero-title">Hiba Baccouch</h1>
+            <p class="hero-subtitle">Thinking boldly. Creating with passion. Innovating fearlessly. Impacting the world, one idea at a time.</p>
+            <a href="#projects" class="hologram-button">Enter Portfolio</a>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="section" id="projects">
+        <h2 class="section-title">Featured Work</h2>
+        
+        <!-- Project Filter Buttons -->
+        <div class="project-filters">
+            <button class="filter-btn active" data-filter="all">All Projects</button>
+            <button class="filter-btn" data-filter="mobile">Mobile Applications</button>
+            <button class="filter-btn" data-filter="website">Websites</button>
+        </div>
+        
+        <div class="projects-container">
+            <div class="project-card" data-category="mobile">
+                <div class="project-image">
+                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\Synapse.jpg" alt="Synapse" />
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Synapse</h3>
+                    <p class="project-description">A compagnion mobile application for a car system that tracks ADHD Hyperfication and provides personal ADHD insights with displaying car data on HUD in real-time.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">IoT</span>
+                        <span class="tech-tag">Ai</span>
+                        <span class="tech-tag">Computer Vision</span>
+                        <span class="tech-tag">Mobile Application</span>
+                        <span class="tech-tag">Figma</span>
+                        <span class="tech-tag">Flutter</span>
+                        <span class="tech-tag">Firebase</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://play.google.com/store/apps/details?id=com.app.synapse&pcampaignid=web_share" class="project-link" target="_blank">Download Link</a>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card" data-category="mobile">
+                <div class="project-image">
+                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\Foresight.png" alt="Foresight" />
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Foresight</h3>
+                    <p class="project-description">A medical mobile application which is used to track and predict mental health status, set and manage patient visits and manage the medical and secretary staff. </br>It is managed by an admin that can add or remove doctors and secretaries.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Ai</span>
+                        <span class="tech-tag">Mobile Application</span>
+                        <span class="tech-tag">Figma</span>
+                        <span class="tech-tag">Flutter</span>
+                    </div>
+                    <!--<div class="project-links">
+                        <a href="#" class="project-link">Explore VR</a>
+                        <a href="#" class="project-link">Documentation</a>
+                    </div>-->
+                </div>
+            </div>
+            <div class="project-card" data-category="website">
+                <div class="project-image">
+                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\Novus.png" alt="Novus ProjeTek" />
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Novus ProjeTek</h3>
+                    <p class="project-description">A website that offers consulting services for green projects and offers jobs by displaying the hiring companies via a modern marketplace.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Website</span>
+                        <span class="tech-tag">Figma</span>
+                        <span class="tech-tag">Green projects</span>
+                        <span class="tech-tag">Consulting</span>
+                        <span class="tech-tag">Marketplace</span>
+                    </div>
+                    <!--<<div class="project-links">
+                        <a href="#" class="project-link">Try Beta</a>
+                        <a href="#" class="project-link">Research Paper</a>
+                    </div>-->
+                </div>
+            </div>
+            <div class="project-card" data-category="website">
+                <div class="project-image">
+                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\RYZODEG.png" alt="RYZODEG" />
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">RYZODEG</h3>
+                    <p class="project-description">A diabetes control website that allows users to learn how to use and manage their insuline dosage and help them with providing specific information based on their mesurments.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Website</span>
+                        <span class="tech-tag">Figma</span>
+                        <span class="tech-tag">Medical</span>
+                        <span class="tech-tag">Diabetes</span>
+                    </div>  
+                    <!--<div class="project-links">
+                        <a href="#" class="project-link">View Demo</a>
+                        <a href="#" class="project-link">Technical Specs</a>
+                    </div>-->
+                </div>
+            </div>
+            <div class="project-card" data-category="mobile">
+                <div class="project-image">
+                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\Hope.png" alt="Hope" />
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Hope</h3>
+                    <p class="project-description">A mobile application that tracks mental health for kids whithin age ranges, teacher and parents and provides personal insights and tips based on each users data and progress to prevent many social problems and disasters.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Mobile Application</span>
+                        <span class="tech-tag">Figma</span>
+                        <span class="tech-tag">Ai</span>
+                        <span class="tech-tag">Mental Health</span>
+                        <span class="tech-tag">Education</span>
+                    </div>
+                    <!--<<div class="project-links">
+                        <a href="#" class="project-link">Try Beta</a>
+                        <a href="#" class="project-link">Research Paper</a>
+                    </div>-->
+                </div>
+            </div>
+            <div class="project-card" data-category="mobile">
+                <div class="project-image">
+                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\GreenLoop.png" alt="GreenLoop" />
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">GreeLoop</h3>
+                    <p class="project-description">A mobile application crafted to control and help with food waste managment to keep the environment cleaner and recycle the tons of food wasted everyday by trasforming it to compost for plants and selling freshly unfinished or not presentable meals with low prices for needy people or as animals food.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Website</span>
+                        <span class="tech-tag">Figma</span>
+                        <span class="tech-tag">Food Waste Managment</span>
+                        <span class="tech-tag">Environment</span>
+                    </div>  
+                    <!--<div class="project-links">
+                        <a href="#" class="project-link">View Demo</a>
+                        <a href="#" class="project-link">Technical Specs</a>
+                    </div>-->
+                </div>
+            </div>
+            <div class="project-card" data-category="website">
+                <div class="project-image">
+                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\CCNSCOLLAB.png" alt="CCNSCOLLAB" />
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Project Managment Website</h3>
+                    <p class="project-description">A website that allows task management and project tracking via a user-friendly dashboard and features like documents and sub-tasks managment. </br> It also offers progress tracking and a calendar for future tasks and meetings.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Website</span>
+                        <span class="tech-tag">Figma</span>
+                        <span class="tech-tag">Porject Managment</span>
+                        <span class="tech-tag">Productivity</span>
+                        <span class="tech-tag">Work Boosting</span>
+                    </div>
+                    <!--<<div class="project-links">
+                        <a href="#" class="project-link">Try Beta</a>
+                        <a href="#" class="project-link">Research Paper</a>
+                    </div>-->
+                </div>
+            </div>
+            <div class="project-card" data-category="website">
+                <div class="project-image">
+                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\law.png" alt="Law Website" />
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Law Website</h3>
+                    <p class="project-description">A website that introduces law in simple terms for citizens to know their rights, uses Ai to empower and help lawyers boost their work and helps business by streamlining all the legal process for legal hudlers to boost business output all covering the legal side.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Website</span>
+                        <span class="tech-tag">Figma</span>
+                        <span class="tech-tag">Law</span>
+                        <span class="tech-tag">Work Boosting</span>
+                    </div>  
+                    <!--<div class="project-links">
+                        <a href="#" class="project-link">View Demo</a>
+                        <a href="#" class="project-link">Technical Specs</a>
+                    </div>-->
+                </div>
+            </div>
+            <div class="project-card" data-category="mobile">
+                <div class="project-image">
+                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\eventi.png" alt="Eventi" />
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Eventi - Community App</h3>
+                    <p class="project-description">An intutive application that allows users to meet and chat with people sharing the same interst as them by joining and creating group chats and events which allows them to expand their social network and relationships.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Mobile Application</span>
+                        <span class="tech-tag">Figma</span>
+                        <span class="tech-tag">Community Application</span>
+                        <span class="tech-tag">Social Life</span>
+                        <span class="tech-tag">Networking</span>
+                        <span class="tech-tag">Messaging</span>
+                        <span class="tech-tag">Group Creation</span>
+                    </div>
+                    <!--<<div class="project-links">
+                        <a href="#" class="project-link">Try Beta</a>
+                        <a href="#" class="project-link">Research Paper</a>
+                    </div>-->
+                </div>
+            </div>
+            <div class="project-card" data-category="mobile">
+                <div class="project-image">
+                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\gym app.png" alt="Gym App" />
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Gym Application</h3>
+                    <p class="project-description">The perfect mobile application for all fitness people to receive their personalized exercices based on their information tracking, get information about gym and to be in contact with professional gym coachs.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Mobile Application</span>
+                        <span class="tech-tag">Figma</span>
+                        <span class="tech-tag">Gym</span>
+                        <span class="tech-tag">Fitness</span>
+                        <span class="tech-tag">Workout</span>
+                    </div>  
+                    <!--<div class="project-links">
+                        <a href="#" class="project-link">View Demo</a>
+                        <a href="#" class="project-link">Technical Specs</a>
+                    </div>-->
+                </div>
+            </div>
+            <div class="project-card" data-category="website">
+                <div class="project-image">
+                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\gym web.png" alt="Gym Web" />
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Gym Managment Dashboard</h3>
+                    <p class="project-description">An easy to use gym dashboard for gym owners to manage their coachs, members, payments, material and events that can be organized.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Website</span>
+                        <span class="tech-tag">Figma</span>
+                        <span class="tech-tag">Dashboard</span>
+                        <span class="tech-tag">Gym</span>
+                        <span class="tech-tag">Managment</span>
+                        <span class="tech-tag">Event Organization</span>
+                    </div>
+                    <!--<<div class="project-links">
+                        <a href="#" class="project-link">Try Beta</a>
+                        <a href="#" class="project-link">Research Paper</a>
+                    </div>-->
+                </div>
+            </div>
+            <div class="project-card" data-category="website">
+                <div class="project-image">
+                    <img src="C:\Users\MSI\Desktop\PortfolioHiba\images\Drug Discovery.png" alt="Drug Discovery" />
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Drug Discovery Website</h3>
+                    <p class="project-description">Using a revolutionary Ai, our website allows you to generate and discover rational drug design and identify viral diseases and antiviral compounds.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Website</span>
+                        <span class="tech-tag">Figma</span>
+                        <span class="tech-tag">NLP</span>
+                        <span class="tech-tag">QSAR</span>
+                        <span class="tech-tag">LLM</span>
+                        <span class="tech-tag">Ai</span>
+                        <span class="tech-tag">Drug Discovery</span>
+                        <span class="tech-tag">Medical</span>
+                    </div>  
+                    <!--<div class="project-links">
+                        <a href="#" class="project-link">View Demo</a>
+                        <a href="#" class="project-link">Technical Specs</a>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="section" id="skills">
+        <h2 class="section-title">Advanced Capabilities</h2>
+        
+        <!-- Skills Filter Buttons -->
+        <div class="skills-filters">
+            <button class="filter-btn skills-filter-btn active" data-filter="all">All Skills</button>
+            <button class="filter-btn skills-filter-btn" data-filter="design">Design</button>
+            <button class="filter-btn skills-filter-btn" data-filter="management">Work Management</button>
+            <button class="filter-btn skills-filter-btn" data-filter="development">Development Tools</button>
+        </div>
+        
+        <div class="skills-grid">
+            <!-- Design Tools -->
+            <div class="skill-card" data-category="design">
+                <div class="Skill-Logo">
+                    <img src="logos/figma.png" alt="Figma" />
+                </div>
+                <h3 class="skill-title">Figma</h3>
+                <p class="skill-description">Designing intuitive interfaces using Figma.</p>
+            </div>
+            <div class="skill-card" data-category="design">
+                <div class="Skill-Logo">
+                    <img src="logos/photoshop.png" alt="Photoshop" />
+                </div>
+                <h3 class="skill-title">Photoshop</h3>
+                <p class="skill-description">Creating designs using Photoshop when needed.</p>
+            </div>
+            <div class="skill-card" data-category="design">
+                <div class="Skill-Logo">
+                    <img src="logos/illustrator.png" alt="Illustrator" />
+                </div>
+                <h3 class="skill-title">Illustrator</h3>
+                <p class="skill-description">Designing logos and illustrations using Illustrator when needed.</p>
+            </div>
+            
+            <!-- Work Management Tools -->
+            <div class="skill-card" data-category="management">
+                <div class="Skill-Logo">
+                    <img src="logos/miro.png" alt="Miro" />
+                </div>
+                <h3 class="skill-title">Miro</h3>
+                <p class="skill-description">Using Miro to create mindmaps and manage my work ideas.</p>
+            </div>
+            <div class="skill-card" data-category="management">
+                <div class="Skill-Logo">
+                    <img src="logos/trello.png" alt="Trello" />
+                </div>
+                <h3 class="skill-title">Trello</h3>
+                <p class="skill-description">Using Trello to manage projects.</p>
+            </div>
+            
+            <!-- Development Tools -->
+            <div class="skill-card" data-category="development">
+                <div class="Skill-Logo">
+                    <img src="logos/flutter.png" alt="Flutter" />
+                </div>
+                <h3 class="skill-title">Flutter</h3>
+                <p class="skill-description">Developping Mobile applications using Flutter.</p>
+            </div>
+            <div class="skill-card" data-category="development">
+                <div class="Skill-Logo">
+                    <img src="logos/firebase.png" alt="Firebase" />
+                </div>
+                <h3 class="skill-title">Firebase</h3>
+                <p class="skill-description">Using Firebase to stock and retrieve data in real-time when developping applications.</p>
+            </div>
+            <div class="skill-card" data-category="development">
+                <div class="Skill-Logo">
+                    <img src="logos/angular.png" alt="Angular" />
+                </div>
+                <h3 class="skill-title">Angular</h3>
+                <p class="skill-description">Developping intutive websites using Angular.</p>
+            </div>
+            <div class="skill-card" data-category="development">
+                <div class="Skill-Logo">
+                    <img src="logos/mongoDB.png" alt="MongoDB" />
+                </div>
+                <h3 class="skill-title">MongoDB</h3>
+                <p class="skill-description">Using MongoDB to manage noSQL databases.</p>
+            </div>
+            <div class="skill-card" data-category="development">
+                <div class="Skill-Logo">
+                    <img src="logos/MySQL.png" alt="MySQL" />
+                </div>
+                <h3 class="skill-title">MySQL</h3>
+                <p class="skill-description">Using MySQL to manage stractured data.</p>
+            </div>
+            <div class="skill-card" data-category="development">
+                <div class="Skill-Logo">
+                    <img src="logos/postman.png" alt="Postman" />
+                </div>
+                <h3 class="skill-title">Postman</h3>
+                <p class="skill-description">Using Postman to test APIs.</p>
+            </div>
+            <div class="skill-card" data-category="development">
+                <div class="Skill-Logo">
+                    <img src="logos/linux.png" alt="Linux" />
+                </div>
+                <h3 class="skill-title">Linux</h3>
+                <p class="skill-description">Using Linux when developping and building IoT systems.</p>
+            </div>
+            <div class="skill-card" data-category="development">
+                <div class="Skill-Logo">
+                    <img src="logos/python.png" alt="Python" />
+                </div>
+                <h3 class="skill-title">Python</h3>
+                <p class="skill-description">Using Python to create and develop powerful Ai models using his advanced libraries and features as well as using it in IoT systems.</p>
+            </div>
+            <div class="skill-card" data-category="development">
+                <div class="Skill-Logo">
+                    <img src="logos/c.png" alt="C" />
+                </div>
+                <h3 class="skill-title">C Language</h3>
+                <p class="skill-description">Using C language in IoT system develop like Arduino, Espressif, STM32, etc.</p>
+            </div>
+            <div class="skill-card" data-category="development">
+                <div class="Skill-Logo">
+                    <img src="logos/github.png" alt="GitHub" />
+                </div>
+                <h3 class="skill-title">GitHub</h3>
+                <p class="skill-description">Using GitHub to version control and collaborate on software development projects.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience & Education Section -->
+    <section class="section" id="experience">
+        <h2 class="section-title">Experience & Education</h2>
+        <div class="experience-container">
+            <!-- Experience Timeline -->
+            <div class="timeline-section">
+                <h3 class="timeline-title">Professional Experience</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">March 2025 - Present</div>
+                            <h4 class="timeline-role">UX/UI Freelancer - Remote</h4>
+                            <!--<div class="timeline-company">TechNova Solutions</div>-->
+                            <p class="timeline-description">Creating intutive design based on clients requests and satisfying their needs using user-centred research.</p>
+                            <div class="timeline-tech">
+                                <span class="tech-tag">Figma</span>
+                                <!--<span class="tech-tag">Unity</span>
+                                <span class="tech-tag">WebXR</span>
+                                <span class="tech-tag">Neural Interfaces</span>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">Jan 2025 - Mar 2025</div>
+                            <h4 class="timeline-role">UX/UI Designer Intern</h4>
+                            <div class="timeline-company">SarSatX - Saudi Arabia</div>
+                            <p class="timeline-description">Designed user interfaces for a satellite tracking system, focusing on creating intuitive and visually appealing interfaces for users.</p>
+                            <div class="timeline-tech">
+                                <span class="tech-tag">Figma</span>
+                                <span class="tech-tag">Miro</span>
+                                <span class="tech-tag">Adobe Photoshop</span>
+                                <span class="tech-tag">Adobe Illustrator</span>
+                                <span class="tech-tag">Three.js</span>
+                                <span class="tech-tag">Angular</span>
+                                <span class="tech-tag">Jira</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">Jan 2025 - Mar 2025</div>
+                            <h4 class="timeline-role">UX/UI Designer - Tunis</h4>
+                            <div class="timeline-company">Myco technologies</div>
+                            <p class="timeline-description">Created innovative interface concepts for emerging technologies.</p>
+                            <div class="timeline-tech">
+                                <span class="tech-tag">Figma</span>
+                                <span class="tech-tag">Prototyping</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">Jan 2024 - Jun 2024</div>
+                            <h4 class="timeline-role">UX/UI Designer</h4>
+                            <div class="timeline-company">Tradrly - Mahdia</div>
+                            <p class="timeline-description">Collaborated with a cross-functional team to design and develop a user-friendly designss. Conducted deep user research, wireframing, and prototyping to create an intuitive and visually appealing interface that enhanced the user experience.</p>
+                            <div class="timeline-tech">
+                                <span class="tech-tag">Figma</span>
+                                <span class="tech-tag">Prototyping</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">Jan 2025 - Mar 2025</div>
+                            <h4 class="timeline-role">UX/UI Trainer</h4>
+                            <div class="timeline-company">Formacity - Mahdia</div>
+                            <p class="timeline-description">Helped students to learn how to conduct user research, create wireframes, and prototypes for user interfaces. Assisted in the design and development of interactive prototypes using Figma.</p>
+                            <div class="timeline-tech">
+                                <span class="tech-tag">Figma</span>
+                                <span class="tech-tag">FigJam</span>
+                                <span class="tech-tag">Prototyping</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Education Section -->
+            <div class="education-section">
+                <h3 class="education-title">Education & Certifications</h3>
+                <div class="education-grid">
+                    <div class="education-card">
+                        <div class="education-icon">🎓</div>
+                        <div class="education-content">
+                            <h4 class="education-degree">Licence in Computer Engineering</h4>
+                            <div class="education-field">IoT and Embedded Systems</div>
+                            <div class="education-school">ISIMa - Higher Institute of Computer Science of Mahdia</div>
+                            <div class="education-year">Sept 2022 - Jun 2025</div>
+                            <p class="education-description">Specialized in IoT and Embedded Systems, I was able to create and merge modern cutting-edge technologies together ensuring real-time system functionning, integrating Ai in edge computing and designing, creating and developping web and mobile application seperatly or connected and linked to the IoT systems. </br> This journey tought me how to use several IoT microcontrollers and programmable cards such as <b>Raspberry Pi, Arduino and STM32</b> with a lot of high and low level coding languages like <b>Assambly and Python</b>. </br> Aside from the academic journey, I had the chance to enhance my social skills via clubs and social life as i was <b>the president of my own club</b> and I had the chance to merge into the <b>entrepreurship world</b> and win sevral trophies and titles.</p>
+                        </div>
+                    </div>
+                    <div class="education-card">
+                        <div class="education-icon">🔬</div>
+                        <div class="education-content">
+                            <h4 class="education-degree">Baccalaurate</h4>
+                            <div class="education-field">Science</div>
+                            <div class="education-school">Dar Lamen High School - Kairouan</div>
+                            <div class="education-year">Sept 2018 - Jun 2022</div>
+                        </div>
+                    </div>
+                    <!--<div class="education-card">
+                        <div class="education-icon">🔬</div>
+                        <div class="education-content">
+                            <h4 class="education-degree">Certification</h4>
+                            <div class="education-field">Advanced AR/VR Development</div>
+                            <div class="education-school">Google XR Academy</div>
+                            <div class="education-year">2022</div>
+                            <p class="education-description">Advanced certification in spatial computing, WebXR development, and immersive experience design.</p>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section" id="contact">
+        <div class="contact-section">
+            <div class="contact-content">
+                <h2 class="contact-title">Let's Build the Future</h2>
+                <p class="contact-subtitle">Ready to push the boundaries of what's possible? Let's collaborate on revolutionary projects that will reshape how humans interact with technology.</p>
+                <div class="contact-buttons">
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact.hibabaccouch@gmail.com" target="_blank" class="contact-btn">Email</a>
+                    <a href="https://www.linkedin.com/in/hibabaccouch/" target="_blank" class="contact-btn">Linkedin</a>
+                    <a href="https://github.com/hiba1baccouch" target="_blank"class="contact-btn">Github</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Advanced Loading System
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    initializePortfolio();
+                }, 1000);
+            }, 2000);
+        });
+
+        function initializePortfolio() {
+            initAdvancedCursor();
+            initParticleSystem();
+            initHeroCanvas();
+            initScrollEffects();
+            initNavigation();
+        }
+
+        // Advanced Cursor System
+        function initAdvancedCursor() {
+            const cursor = document.getElementById('cursor');
+            const cursorOuter = document.getElementById('cursorOuter');
+            const trails = [];
+            
+            let mouseX = 0, mouseY = 0;
+            let cursorX = 0, cursorY = 0;
+            let outerX = 0, outerY = 0;
+
+            // Create cursor trails
+            for (let i = 0; i < 20; i++) {
+                const trail = document.createElement('div');
+                trail.className = 'cursor-trail';
+                document.body.appendChild(trail);
+                trails.push({
+                    element: trail,
+                    x: 0,
+                    y: 0,
+                    opacity: 1 - (i * 0.05)
+                });
+            }
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function animateCursor() {
+                const dx = mouseX - cursorX;
+                const dy = mouseY - cursorY;
+                const dxOuter = mouseX - outerX;
+                const dyOuter = mouseY - outerY;
+                
+                cursorX += dx * 0.3;
+                cursorY += dy * 0.3;
+                outerX += dxOuter * 0.1;
+                outerY += dyOuter * 0.1;
+                
+                cursor.style.left = cursorX + 'px';
+                cursor.style.top = cursorY + 'px';
+                cursorOuter.style.left = outerX - 16 + 'px';
+                cursorOuter.style.top = outerY - 16 + 'px';
+
+                // Animate trails
+                for (let i = trails.length - 1; i > 0; i--) {
+                    trails[i].x = trails[i - 1].x;
+                    trails[i].y = trails[i - 1].y;
+                }
+                trails[0].x = cursorX;
+                trails[0].y = cursorY;
+
+                trails.forEach((trail, index) => {
+                    trail.element.style.left = trail.x + 'px';
+                    trail.element.style.top = trail.y + 'px';
+                    trail.element.style.opacity = trail.opacity;
+                });
+                
+                requestAnimationFrame(animateCursor);
+            }
+            animateCursor();
+
+            // Cursor interactions
+            const interactiveElements = document.querySelectorAll('a, button, .project-card');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.style.transform = 'scale(2)';
+                    cursorOuter.style.transform = 'scale(2)';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.transform = 'scale(1)';
+                    cursorOuter.style.transform = 'scale(1)';
+                });
+            });
+        }
+
+        // Advanced Particle System
+        function initParticleSystem() {
+            const particleContainer = document.getElementById('particles');
+            const particles = [];
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = Math.random() * 4 + 1 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = `rgba(34, 211, 238, ${Math.random() * 0.5 + 0.1})`;
+                particle.style.borderRadius = '50%';
+                particle.style.pointerEvents = 'none';
+                
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                const vx = (Math.random() - 0.5) * 0.5;
+                const vy = (Math.random() - 0.5) * 0.5;
+                
+                particles.push({
+                    element: particle,
+                    x: x,
+                    y: y,
+                    vx: vx,
+                    vy: vy,
+                    size: parseFloat(particle.style.width)
+                });
+                
+                particleContainer.appendChild(particle);
+            }
+
+            function animateParticles() {
+                particles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    
+                    if (particle.x < 0 || particle.x > window.innerWidth) particle.vx *= -1;
+                    if (particle.y < 0 || particle.y > window.innerHeight) particle.vy *= -1;
+                    
+                    particle.element.style.left = particle.x + 'px';
+                    particle.element.style.top = particle.y + 'px';
+                });
+                
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+        }
+
+        // Advanced Hero Canvas with Complex 3D Scene
+        function initHeroCanvas() {
+            const canvas = document.getElementById('heroCanvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            // Create complex geometry
+            const geometries = [
+                new THREE.IcosahedronGeometry(1, 2),
+                new THREE.OctahedronGeometry(1, 1),
+                new THREE.TetrahedronGeometry(1, 0),
+                new THREE.DodecahedronGeometry(1, 0)
+            ];
+
+            const materials = [
+                new THREE.MeshBasicMaterial({ 
+                    color: 0x6366f1, 
+                    wireframe: true, 
+                    transparent: true, 
+                    opacity: 0.3 
+                }),
+                new THREE.MeshBasicMaterial({ 
+                    color: 0x8b5cf6, 
+                    wireframe: true, 
+                    transparent: true, 
+                    opacity: 0.2 
+                }),
+                new THREE.MeshBasicMaterial({ 
+                    color: 0x22d3ee, 
+                    wireframe: true, 
+                    transparent: true, 
+                    opacity: 0.4 
+                })
+            ];
+
+            const meshes = [];
+            for (let i = 0; i < 30; i++) {
+                const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+                const material = materials[Math.floor(Math.random() * materials.length)];
+                const mesh = new THREE.Mesh(geometry, material);
+                
+                mesh.position.set(
+                    (Math.random() - 0.5) * 30,
+                    (Math.random() - 0.5) * 30,
+                    (Math.random() - 0.5) * 30
+                );
+                
+                mesh.rotation.set(
+                    Math.random() * Math.PI * 2,
+                    Math.random() * Math.PI * 2,
+                    Math.random() * Math.PI * 2
+                );
+                
+                mesh.scale.setScalar(Math.random() * 0.5 + 0.5);
+                
+                scene.add(mesh);
+                meshes.push({
+                    mesh: mesh,
+                    rotationSpeed: {
+                        x: (Math.random() - 0.5) * 0.02,
+                        y: (Math.random() - 0.5) * 0.02,
+                        z: (Math.random() - 0.5) * 0.02
+                    },
+                    floatSpeed: Math.random() * 0.01 + 0.005,
+                    floatOffset: Math.random() * Math.PI * 2
+                });
+            }
+
+            camera.position.z = 15;
+
+            // Mouse interaction
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+                mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                const time = Date.now() * 0.001;
+                
+                meshes.forEach((item, index) => {
+                    const mesh = item.mesh;
+                    
+                    // Rotation
+                    mesh.rotation.x += item.rotationSpeed.x;
+                    mesh.rotation.y += item.rotationSpeed.y;
+                    mesh.rotation.z += item.rotationSpeed.z;
+                    
+                    // Floating motion
+                    mesh.position.y += Math.sin(time * item.floatSpeed + item.floatOffset) * 0.01;
+                    
+                    // Mouse interaction
+                    mesh.position.x += (mouseX * 2 - mesh.position.x) * 0.01;
+                    mesh.position.z += (mouseY * 2 - mesh.position.z) * 0.01;
+                });
+                
+                // Camera movement
+                camera.position.x += (mouseX * 2 - camera.position.x) * 0.05;
+                camera.position.y += (mouseY * 2 - camera.position.y) * 0.05;
+                camera.lookAt(scene.position);
+                
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // Resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // Advanced Scroll Effects
+        function initScrollEffects() {
+            const scrollProgress = document.getElementById('scrollProgress');
+            
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollPercent = (scrollTop / docHeight) * 100;
+                
+                scrollProgress.style.width = scrollPercent + '%';
+            });
+
+            // Scroll-triggered animations
+            const observerOptions = {
+                threshold: 0.3,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe section titles and cards
+            document.querySelectorAll('.section-title').forEach(el => {
+                observer.observe(el);
+            });
+            
+            document.querySelectorAll('.skill-card').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Advanced Navigation
+        function initNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('section[id]');
+
+            // Smooth scrolling
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = item.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Active navigation highlighting
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (window.pageYOffset >= sectionTop - 300) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href').substring(1) === current) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        // Advanced Project Card Interactions
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('mouseenter', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.setProperty('--mouse-x', x + 'px');
+                card.style.setProperty('--mouse-y', y + 'px');
+            });
+            
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                card.style.transform = `translateY(-20px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) rotateX(0) rotateY(0)';
+            });
+        });
+
+        // Advanced Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'j') {
+                e.preventDefault();
+                window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+            } else if (e.key === 'ArrowUp' || e.key === 'k') {
+                e.preventDefault();
+                window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+        });
+
+        // Performance monitoring
+        let fps = 0;
+        let lastTime = performance.now();
+        
+        function measureFPS() {
+            const currentTime = performance.now();
+            fps = 1000 / (currentTime - lastTime);
+            lastTime = currentTime;
+            
+            if (fps < 30) {
+                // Reduce particle count for better performance
+                const particles = document.querySelectorAll('.cursor-trail');
+                particles.forEach((particle, index) => {
+                    if (index > 10) particle.style.display = 'none';
+                });
+            }
+            
+            requestAnimationFrame(measureFPS);
+        }
+        measureFPS();
+
+        // Project Filter System
+        function initProjectFilters() {
+            const filterButtons = document.querySelectorAll('.filter-btn:not(.skills-filter-btn)');
+            const projectCards = document.querySelectorAll('.project-card');
+            
+            // Set initial state - all projects visible
+            projectCards.forEach(card => {
+                card.classList.add('visible');
+                card.classList.remove('hidden');
+            });
+            
+            // Set 'All Projects' as active by default
+            filterButtons[0].classList.add('active');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    const filter = button.getAttribute('data-filter');
+                    
+                    projectCards.forEach(card => {
+                        const category = card.getAttribute('data-category');
+                        
+                        if (filter === 'all' || category === filter) {
+                            // Show card with animation
+                            card.classList.remove('hidden');
+                            card.classList.add('visible');
+                        } else {
+                            // Hide card with animation
+                            card.classList.remove('visible');
+                            card.classList.add('hidden');
+                        }
+                    });
+                    
+                    // Add a slight delay for smooth animation
+                    setTimeout(() => {
+                        // Trigger reflow for better animation
+                        projectCards.forEach(card => {
+                            if (card.classList.contains('visible')) {
+                                card.style.transform = 'scale(1) translateY(0)';
+                            }
+                        });
+                    }, 50);
+                });
+            });
+        }
+        
+        // Skills Filter System
+        function initSkillsFilters() {
+            const skillsFilterButtons = document.querySelectorAll('.skills-filter-btn');
+            const skillCards = document.querySelectorAll('.skill-card');
+            
+            // Set initial state - all skills visible
+            skillCards.forEach(card => {
+                card.classList.add('visible');
+                card.classList.remove('hidden');
+            });
+            
+            // Set 'All Skills' as active by default
+            skillsFilterButtons[0].classList.add('active');
+            
+            skillsFilterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    skillsFilterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    const filter = button.getAttribute('data-filter');
+                    
+                    skillCards.forEach(card => {
+                        const category = card.getAttribute('data-category');
+                        
+                        if (filter === 'all' || category === filter) {
+                            // Show card
+                            card.classList.remove('hidden');
+                            card.classList.add('visible');
+                        } else {
+                            // Hide card completely
+                            card.classList.remove('visible');
+                            card.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        }
+        
+        // Initialize skills filters
+        document.addEventListener('DOMContentLoaded', () => {
+            initProjectFilters();
+            initSkillsFilters();
+        });
+        
+        // Also initialize after loading screen
+        setTimeout(() => {
+            initProjectFilters();
+            initSkillsFilters();
+        }, 3000);
+    </script>
+</body>
+</html>
