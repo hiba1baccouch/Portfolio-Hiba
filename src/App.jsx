@@ -62,15 +62,15 @@ const Marquee = () => {
     }, { scope: marqueeRef });
 
     const images = [
-        '/images/lynkr.png',
-        '/images/vita+.png',
-        '/images/Loki.png',
-        '/images/maisonetvie.png',
-        '/images/Synapse.jpg',
-        '/images/Foresight.png',
-        '/images/Drug Discovery.png',
-        '/images/GreenLoop.png',
-        '/images/Hope.png'
+        'images/lynkr.png',
+        'images/vita+.png',
+        'images/Loki.png',
+        'images/maisonetvie.png',
+        'images/Synapse.jpg',
+        'images/Foresight.png',
+        'images/Drug Discovery.png',
+        'images/GreenLoop.png',
+        'images/Hope.png'
     ];
 
     return (
@@ -207,39 +207,39 @@ const App = () => {
                         <ProjectCard 
                             title="LYNKR - ORGANIZE & SHARE" 
                             tags="iOS / MOBILE / ASO" 
-                            image="/images/lynkr2.png"
+                            image="images/lynkr2.png"
                             wide 
                         />
                         <ProjectCard 
                             title="VITA + HABIT TRACKER" 
                             tags="iOS / MOBILE / FIGMA" 
-                            image="/images/vita+.png"
+                            image="images/vita+.png"
                         />
                         <ProjectCard 
                             title="LOKI PET FILTERS" 
                             tags="iOS / UI/UX / FIGMA" 
-                            image="/images/Loki.png"
+                            image="images/Loki.png"
                         />
                         <ProjectCard 
                             title="MAISON ET VIE" 
                             tags="WEBSITE / INTERIOR DESIGN" 
-                            image="/images/maisonetvie.png"
+                            image="images/maisonetvie.png"
                             wide 
                         />
                         <ProjectCard 
                             title="SYNAPSE ADHD TRACKER" 
                             tags="IoT / AI / FLUTTER" 
-                            image="/images/Synapse.jpg"
+                            image="images/Synapse.jpg"
                         />
                         <ProjectCard 
                             title="FORESIGHT MEDICAL" 
                             tags="AI / MEDICAL / FLUTTER" 
-                            image="/images/Foresight.png"
+                            image="images/Foresight.png"
                         />
                         <ProjectCard 
                             title="DRUG DISCOVERY AI" 
                             tags="AI / MEDICAL / NLP" 
-                            image="/images/Drug Discovery.png"
+                            image="images/Drug Discovery.png"
                             wide
                         />
                     </div>
@@ -294,7 +294,7 @@ const App = () => {
                                 <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>Mohammed Almawsami</p>
                                 <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Product Manager at SARsatX</p>
                             </div>
-                            <a href="/Recommendation Heba.pdf" download="Recommendation_Hiba_Baccouch_SARsatX.pdf" className="nav-link" style={{ fontSize: '0.9rem', opacity: 0.8 }}>
+                            <a href="Recommendation Heba.pdf" download="Recommendation_Hiba_Baccouch_SARsatX.pdf" className="nav-link" style={{ fontSize: '0.9rem', opacity: 0.8 }}>
                                 <span className="arrow-char">↓</span>
                                 <span>Download PDF</span>
                             </a>
